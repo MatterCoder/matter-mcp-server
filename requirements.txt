@@ -1,0 +1,5 @@
+aiohttp>=3.8.0
+websockets>=10.0
+aiorun>=2022.4.1
+coloredlogs>=15.0.1
+python-matter-server>=3.0.0
