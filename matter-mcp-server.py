@@ -34,15 +34,26 @@ async def send_websocket_command(message: Dict[str, Any], host: str = 'ws://127.
     return responses
 
 @mcp.tool()
-async def get_nodes() -> List[Dict[str, Any]]:
-    """Get all commissioned nodes."""
+async def get_nodes() -> List[Dict[str, int]]:
+    """Get all commissioned nodes (returns only node IDs)."""
     message = {
         "message_id": "2",
         "command": "get_nodes"
     }
     response = await send_websocket_command(message)
-    return response[0:300]
-#    return [{"node_id": 1, "name": "Example Node"}]
+    # Extract only node IDs from the response
+    node_ids = []
+    for item in response:
+        if "result" in item:
+            if isinstance(item["result"], list):
+                # Handle case where result is a list of nodes
+                for node in item["result"]:
+                    if isinstance(node, dict) and "node_id" in node:
+                        node_ids.append({"node_id": node["node_id"]})
+            elif isinstance(item["result"], dict) and "node_id" in item["result"]:
+                # Handle case where result is a single node
+                node_ids.append({"node_id": item["result"]["node_id"]})
+    return node_ids
 
 @mcp.tool()
 async def get_node(node_id: int) -> List[Dict[str, Any]]:
@@ -121,13 +132,16 @@ async def read_attribute(node_id: int, attribute_path: str) -> List[Dict[str, An
 @mcp.tool()
 async def write_attribute(node_id: int, attribute_path: str, value: Any) -> List[Dict[str, Any]]:
     """Write an attribute value to a node."""
+    # If the value is already a string, don't wrap it in extra quotes
+    actual_value = value.strip('"') if isinstance(value, str) else value
+    
     message = {
         "message_id": "write",
         "command": "write_attribute",
         "args": {
             "node_id": node_id,
             "attribute_path": attribute_path,
-            "value": value
+            "value": actual_value
         }
     }
     return await send_websocket_command(message)
