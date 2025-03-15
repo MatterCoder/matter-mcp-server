@@ -1,3 +1,4 @@
+
 # matter-mcp-server
 MCP Server for the Matter Devices
 
@@ -11,7 +12,7 @@ cd matter-mcp-server
 
 2. Create and activate a Python virtual environment:
 ```bash
-python3 -m venv venv
+python3 -m venv .venv
 source venv/bin/activate  # On Windows use: venv\Scripts\activate
 ```
 

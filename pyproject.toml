@@ -1,0 +1,15 @@
+[project]
+name = "matter-mcp-server"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiohttp>=3.8.0",
+    "aiorun>=2022.4.1",
+    "coloredlogs>=15.0.1",
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.4.1",
+    "python-matter-server>=3.0.0",
+    "websockets>=10.0",
+]
