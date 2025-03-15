@@ -17,7 +17,7 @@ async def produce(host: str, port: int, receive_timeout: float = 5.0):
     print(port)
     url = f"{host}:{port}/ws"
 
-    command = clusters.OnOff.Commands.On()
+    command = clusters.DoorLock.Commands.UnlockDoor()
     payload = dataclass_to_dict(command)
 
     message = {
@@ -25,10 +25,12 @@ async def produce(host: str, port: int, receive_timeout: float = 5.0):
         "command": "device_command",
         "args": {
             "endpoint_id":  1,
-            "node_id":  1,
+            "node_id":  11,
             "payload": payload,
             "cluster_id": command.cluster_id,
-            "command_name": "Toggle"
+            "command_name": "UnlockDoor",
+            "timed_request_timeout_ms": 100,
+            "interaction_timeout_ms":100,            
         }
     }
 

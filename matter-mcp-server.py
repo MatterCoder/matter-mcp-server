@@ -40,7 +40,8 @@ async def get_nodes() -> List[Dict[str, Any]]:
         "message_id": "2",
         "command": "get_nodes"
     }
-    return await send_websocket_command(message)
+    response = await send_websocket_command(message)
+    return response[0:300]
 #    return [{"node_id": 1, "name": "Example Node"}]
 
 @mcp.tool()
@@ -134,7 +135,14 @@ async def write_attribute(node_id: int, attribute_path: str, value: Any) -> List
 @mcp.tool()
 async def device_command(endpoint_id: int, node_id: int, cluster_id: int, 
                         command_name: str, payload: Dict[str, Any] = {}) -> List[Dict[str, Any]]:
-    """Send a command to a device."""
+    """Send a command to a device.
+    Args:
+        endpoint_id: The endpoint ID of the device.
+        node_id: The node ID of the device.
+        cluster_id: The cluster ID of the command.
+        command_name: The name of the command.
+        payload: The payload of the command.
+    """
     message = {
         "message_id": "device_command",
         "command": "device_command",
@@ -143,7 +151,9 @@ async def device_command(endpoint_id: int, node_id: int, cluster_id: int,
             "node_id": node_id,
             "payload": payload,
             "cluster_id": cluster_id,
-            "command_name": command_name
+            "command_name": command_name,
+            "timed_request_timeout_ms": 100,
+            "interaction_timeout_ms":100,             
         }
     }
     return await send_websocket_command(message)
@@ -151,15 +161,3 @@ async def device_command(endpoint_id: int, node_id: int, cluster_id: int,
 if __name__ == "__main__":
     # Initialize and run the server
     mcp.run(transport='stdio')
-
-'''
-async def main():
-    try:
-        result = await get_nodes()
-        print("Nodes:", result)
-    except Exception as e:
-        print("Error:", str(e))
-
-if __name__ == "__main__":
-    asyncio.run(main())    
-'''

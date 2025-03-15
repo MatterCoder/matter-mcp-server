@@ -1,0 +1,35 @@
+
+from typing import Any, Optional, Dict, List
+from mcp.server.fastmcp import FastMCP
+import asyncio
+from asyncio import TimeoutError
+
+# Initialize FastMCP server
+mcp = FastMCP("matter-mcp-server")
+
+@mcp.tool()
+async def add(a: int, b: int) -> int:
+    """Add 2 numbers together.    
+    Args:
+        a: The first number
+        b: The second number
+    
+    Returns:
+        The sum of the two numbers
+    """
+    return a + b
+
+# Test function
+async def test_adder():
+    try:
+        result = await add(2, 3)
+        print("Add result:", result)
+    except Exception as e:
+        print("Error:", str(e))
+
+if __name__ == "__main__":
+    # Run the test
+    asyncio.run(test_adder())
+    
+    # Alternatively, run as MCP server
+    # mcp.run(transport='stdio')
