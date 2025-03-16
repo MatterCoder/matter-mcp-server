@@ -64,6 +64,21 @@ Windows: %APPDATA%\Claude
 
 7. Restart Claude Desktop and wait for mcp tools to load
 
+8. Claude Code - MCP Server install
+
+If you have Claude Code installed then execute the following commands in a terminal
+
+```bash
+claude mcp add
+```
+
+```bash
+mater-mcp-server
+```
+
+```bash
+uv --directory [REPLACE_WITH_FULL_PATH_TO_YOUR_REPO] run matter-mcp-server.py
+```
 
 ## Experimenting
 
