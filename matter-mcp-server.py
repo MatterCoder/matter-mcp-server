@@ -12,11 +12,18 @@ mcp = FastMCP("matter-mcp-server")
 
 async def send_websocket_command(message: Dict[str, Any], host: str = 'ws://127.0.0.1', 
                                port: int = 5580, receive_timeout: float = 2.0) -> List[Dict[str, Any]]:
-    """Send command via WebSocket and receive response."""
+    """Send command via WebSocket and receive response.
+    
+    Ignores the initial status message and returns only the command response messages.
+    """
     url = f"{host}:{port}/ws"
     responses = []
     
     async with websockets.connect(url) as ws:
+        # Ignore the initial status message
+        initial_status = await ws.recv()
+        
+        # Send the actual command
         await ws.send(json.dumps(message))
         end_time = time.time() + receive_timeout
         

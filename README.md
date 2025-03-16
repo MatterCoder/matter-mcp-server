@@ -76,3 +76,39 @@ The `samples` directory contains various example scripts demonstrating different
 - And more...
 
 Each sample can be run directly after installing the dependencies.
+
+## To give the agent more knowledge you can add these mcp servers:
+
+```bash
+{
+    "mcpServers": {
+        "matter-mcp-server": {
+            "command": "uv",
+            "args": [
+                "--directory",
+                "[REPLACE_WITH_FULL_PATH_TO_YOUR_REPO]",
+                "run",
+                "matter-mcp-server.py"
+            ]
+        },
+        "matter-coder-search": {
+            "command": "uv",
+            "args": [
+                "--directory",
+                "[REPLACE_WITH_FULL_PATH_TO_YOUR_REPO]",
+                "run",
+                "matter-coder-search.py"
+            ]
+        },
+        "matter-datamodel-mcp": {
+            "command": "uv",
+            "args": [
+                "--directory",
+                "[REPLACE_WITH_FULL_PATH_TO_YOUR_REPO]",
+                "run",
+                "matter-datamodel-mcp.py"
+            ]
+        }
+    }    
+}
+```
