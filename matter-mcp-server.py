@@ -34,30 +34,55 @@ async def send_websocket_command(message: Dict[str, Any], host: str = 'ws://127.
     return responses
 
 @mcp.tool()
-async def get_nodes() -> List[Dict[str, int]]:
-    """Get all commissioned nodes (returns only node IDs)."""
+async def get_nodes() -> List[Dict[str, Any]]:
+    """Get all commissioned nodes, returning only the descriptor (29) and basic information (40) cluster attributes.
+    
+    Returns the original response structure but filters the attributes to only include:
+    - Descriptor Cluster attributes (0/29/*)
+    - Basic Information Cluster attributes (0/40/*)
+    """
     message = {
         "message_id": "2",
         "command": "get_nodes"
     }
     response = await send_websocket_command(message)
-    # Extract only node IDs from the response
-    node_ids = []
+    
+    # Define the attribute patterns to keep
+    keep_patterns = ["0/29/", "0/40/"]
+    
+    # Filter the response
     for item in response:
         if "result" in item:
             if isinstance(item["result"], list):
-                # Handle case where result is a list of nodes
                 for node in item["result"]:
-                    if isinstance(node, dict) and "node_id" in node:
-                        node_ids.append({"node_id": node["node_id"]})
-            elif isinstance(item["result"], dict) and "node_id" in item["result"]:
-                # Handle case where result is a single node
-                node_ids.append({"node_id": item["result"]["node_id"]})
-    return node_ids
+                    if "attributes" in node:
+                        # Create new attributes dict with only matching patterns
+                        filtered_attrs = {
+                            k: v for k, v in node["attributes"].items()
+                            if any(pattern in k for pattern in keep_patterns)
+                        }
+                        node["attributes"] = filtered_attrs
+            elif isinstance(item["result"], dict) and "attributes" in item["result"]:
+                # Create new attributes dict with only matching patterns
+                filtered_attrs = {
+                    k: v for k, v in item["result"]["attributes"].items()
+                    if any(pattern in k for pattern in keep_patterns)
+                }
+                item["result"]["attributes"] = filtered_attrs
+    
+    return response
 
 @mcp.tool()
-async def get_node(node_id: int) -> List[Dict[str, Any]]:
-    """Get information about a specific node."""
+async def get_node(node_id: int, remove_patterns: Optional[List[str]] = None) -> List[Dict[str, Any]]:
+    """Get essential information about a specific node.
+    
+    Args:
+        node_id: The node ID to query
+        remove_patterns: Optional list of attribute patterns to remove. Defaults to ["0/62/"]. Do not include in mcp tool call if you want to use the default.
+        
+    Returns:
+        Original response structure with specified attribute patterns removed
+    """
     message = {
         "message_id": "2",
         "command": "get_node",
@@ -65,7 +90,25 @@ async def get_node(node_id: int) -> List[Dict[str, Any]]:
             "node_id": node_id
         }
     }
-    return await send_websocket_command(message)
+    full_response = await send_websocket_command(message)
+    
+    # Use default pattern if none provided
+    if remove_patterns is None:
+        remove_patterns = ["0/62/"]
+    
+    # Filter the response
+    for item in full_response:
+        if "result" in item:
+            node_data = item["result"]
+            if "attributes" in node_data:
+                # Keep attributes that don't match any of the remove patterns
+                filtered_attrs = {
+                    k: v for k, v in node_data["attributes"].items()
+                    if not any(pattern in k for pattern in remove_patterns)
+                }
+                node_data["attributes"] = filtered_attrs
+    
+    return full_response
 
 @mcp.tool()
 async def start_listening() -> List[Dict[str, Any]]:
@@ -172,6 +215,11 @@ async def device_command(endpoint_id: int, node_id: int, cluster_id: int,
     }
     return await send_websocket_command(message)
 
+async def test_get_nodes():
+    print(await get_node(13))
+
 if __name__ == "__main__":
+    #asyncio.run(test_get_nodes()) # uncomment to run test
+    #     
     # Initialize and run the server
     mcp.run(transport='stdio')
