@@ -1,7 +1,7 @@
 
 # matter-mcp-server
 
-An MCP (Model-Control-Protocol) server that enables Claude and other AI assistants to directly interact with Matter devices and protocol operations. This server bridges the gap between AI language models and IoT device control by providing a structured interface for:
+An MCP (Model-Context-Protocol) server that enables Claude and other AI assistants to directly interact with Matter devices and protocol operations. This server bridges the gap between AI language models and IoT device control by providing a structured interface for:
 
 - Device commissioning and management
 - Reading and writing device attributes
