@@ -96,6 +96,19 @@ mater-mcp-server
 uv --directory [REPLACE_WITH_FULL_PATH_TO_YOUR_REPO] run matter-mcp-server.py
 ```
 
+## Python Matter Server
+The Python Matter Server is used by my MCP server. The Python Matter Server, from the Open Home Foundation, implements a Matter Controller Server over WebSockets using the official Matter (formerly CHIP) SDK.
+
+For running the server and/or client in your development environment, see the [Development documentation](https://github.com/home-assistant-libs/python-matter-server/blob/main/DEVELOPMENT.md).
+
+For running the Matter Server as a standalone docker container, see the  [docker instructions](https://github.com/home-assistant-libs/python-matter-server/blob/main/docs/docker.md).
+
+
+## Testing with a Matter device?
+
+A Matter Virtual Device (MVD) is a software-based emulator provided by Google that simulates Matter-compatible smart home devices for testing and development. It allows developers to validate device behavior without physical hardware. To set it up, use the Matter Virtual Device Tool, follow the steps in the [MVD official guide](https://developers.home.google.com/matter/tools/virtual-device)
+
+
 ## Experimenting
 
 The `samples` directory contains various example scripts demonstrating different Matter protocol operations:
